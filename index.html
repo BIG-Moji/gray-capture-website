@@ -415,7 +415,7 @@
       <div class="section-head">
         <p class="eyebrow">Selected work</p>
         <h2>A portfolio, not a portfolio grid.</h2>
-        <p>Placeholder plates below — add real photos any time from admin mode.</p>
+        <p id="portfolio-note">Placeholder plates below — add real photos any time from admin mode.</p>
       </div>
       <div class="filter-row" id="filters">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -774,6 +774,13 @@
   function renderGallery(){
     const gallery = document.getElementById('gallery');
     const items = state.content.portfolio;
+
+    const note = document.getElementById('portfolio-note');
+    const hasPlaceholders = items.some(item => !item.img);
+    if(note){
+      note.style.display = hasPlaceholders ? '' : 'none';
+    }
+
     let html = items.map(item => {
       const hidden = (state.activeFilter !== 'all' && item.category !== state.activeFilter) ? 'hide' : '';
       const imgHtml = item.img ? `<img src="${item.img}" alt="${escapeAttr(item.caption)}">` : `<div class="grain"></div>`;
