@@ -125,6 +125,10 @@
   .plate-mark::before, .plate-mark::after{ content:''; position:absolute; background:rgba(245,243,238,.35); }
   .plate-mark::before{ width:1px; height:10px; top:50%; left:50%; transform:translate(-50%,-50%); }
   .plate-mark::after{ width:10px; height:1px; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .plate-admin{ position:absolute; inset:0; z-index:4; display:flex; align-items:center; justify-content:center; }
+  .plate-admin:empty{ display:none; }
+  .plate-admin .btn{ background:rgba(11,11,11,.75); border-color:rgba(245,243,238,.4); color:#f5f3ee; backdrop-filter:blur(4px); }
+  .plate-admin .btn:hover{ border-color:#f5f3ee; }
 
   header{
     position:fixed; top:0; left:0; right:0; z-index:100;
@@ -372,33 +376,25 @@
         <a href="#contact" class="btn btn-solid">Start a booking</a>
       </div>
     </div>
-    <div class="plate hero-plate">
+    <div class="plate hero-plate" id="hero-plate">
       <div class="grain"></div>
       <div class="plate-mark"></div>
       <div class="plate-label"><span>[ Hero image — signature wedding or portrait frame ]</span><span>01</span></div>
+      <div id="hero-image-admin" class="plate-admin"></div>
     </div>
   </section>
 
-  <section>
+  <section id="manifesto-section">
     <div class="wrap">
-      <p class="manifesto-lede">A photograph is only worth taking if someone will still want to look at it later.</p>
-      <div class="manifesto-grid">
-        <div class="manifesto-item"><h3>Capture</h3><p>Working close to the day as it actually unfolds — the parts nobody choreographs and everyone remembers.</p></div>
-        <div class="manifesto-item"><h3>Create</h3><p>Directing when a scene calls for it: light, posing, timing, and composition built with intention, not luck.</p></div>
-        <div class="manifesto-item"><h3>Preserve</h3><p>Every frame edited and sequenced so the finished set holds up as a story, not a folder of files.</p></div>
-      </div>
+      <div id="manifesto-content"></div>
     </div>
   </section>
 
   <section id="services">
     <div class="wrap">
       <div class="section-head"><p class="eyebrow">Services</p><h2>A wide range of photography and video services.</h2><p>From full wedding coverage to short-turnaround corporate video — here's everything we cover.</p></div>
-      <div class="service-row"><h3>Wedding photography &amp; video</h3><p>Full-day photo and video coverage from preparation to reception, cut into a film as well as a gallery.</p><span class="service-tag">Ceremony · Reception</span></div>
-      <div class="service-row"><h3>Pre-wedding &amp; engagement</h3><p>A relaxed session ahead of the big day — engagement portraits, save-the-date imagery, couple sets.</p><span class="service-tag">Couples</span></div>
-      <div class="service-row"><h3>Portraits</h3><p>Individual, family and studio portrait sessions, shot on location or in a controlled studio setup.</p><span class="service-tag">Studio · On location</span></div>
-      <div class="service-row"><h3>Events &amp; special occasions</h3><p>Anniversaries, milestone birthdays, launches and community gatherings, covered without getting in the way.</p><span class="service-tag">Full coverage</span></div>
-      <div class="service-row"><h3>Corporate &amp; professional</h3><p>Headshots, team photography, and documentary-style coverage of company events and site visits.</p><span class="service-tag">Teams · Headshots</span></div>
-      <div class="service-row"><h3>Commercial &amp; promotional video</h3><p>Scripted and documentary-style video production for brands, nonprofits and community organizations.</p><span class="service-tag">Video production</span></div>
+      <div id="services-admin"></div>
+      <div id="services-list"></div>
     </div>
   </section>
 
@@ -424,6 +420,7 @@
         <button class="filter-btn" data-filter="events">Events</button>
         <button class="filter-btn" data-filter="couples">Couples</button>
         <button class="filter-btn" data-filter="corporate">Corporate</button>
+        <button class="filter-btn" data-filter="graduations">Graduations</button>
       </div>
       <div class="grid-gallery" id="gallery"></div>
     </div>
@@ -432,20 +429,15 @@
   <section id="experience">
     <div class="wrap">
       <div class="section-head"><p class="eyebrow">How a booking runs</p><h2>What happens between "yes" and the final gallery.</h2></div>
-      <div class="timeline">
-        <div class="step"><div class="step-num">1</div><div><h3>Book &amp; plan</h3><p>Confirm the date, pay a deposit, and settle the details — location, timing, and what the finished images need to do.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div><h3>The session</h3><p>Shooting on the day itself — directing where it helps, staying invisible where it doesn't.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div><h3>Edit &amp; deliver</h3><p>Every frame reviewed and edited by hand, then delivered through a private online gallery — kept and backed up for years after.</p></div></div>
-      </div>
+      <div id="experience-admin"></div>
+      <div class="timeline" id="experience-timeline"></div>
     </div>
   </section>
 
   <section id="about">
     <div class="wrap about-grid">
-      <div class="plate about-plate"><div class="grain"></div><div class="plate-label"><span>The Gray Capture team</span><span>10</span></div></div>
-      <div class="about-copy">
-        <p>Gray Capture started in 2020, when Kofi began assisting other photographers around Accra.</p>
-        <p>Since then it's grown into a small team — photographers, an editor, and hands on the ground for setup and lighting — built around the same belief that started it: a photograph should feel considered, not just correct. Based in Accra, working across Ghana.</p>
+      <div class="plate about-plate" id="about-plate"><div class="grain"></div><div class="plate-label"><span>The Gray Capture team</span><span>10</span></div><div id="about-image-admin" class="plate-admin"></div></div>
+      <div class="about-copy" id="about-copy">
         <div class="about-facts">
           <div class="fact"><b>2020</b><span>Founded in Accra</span></div>
           <div class="fact"><b>Team</b><span>Photographers &amp; editors</span></div>
@@ -587,10 +579,40 @@
   const PAYSTACK_READY = () => window.PaystackPop && PAYSTACK_CONFIG.publicKey !== "YOUR_PAYSTACK_PUBLIC_KEY";
 
   const DEFAULT_CONTENT = {
-    settings: { depositAmount: 300, currency: "GHS" },
+    settings: { depositAmount: 300, currency: "GHS", sheetsWebhookUrl: "" },
     hero: {
       headline: "Photographs that still mean something in twenty years.",
-      sub: "Wedding, portrait and event photography built around one idea: show up early, read the light, and stay out of the way until the moment is real."
+      sub: "Wedding, portrait and event photography built around one idea: show up early, read the light, and stay out of the way until the moment is real.",
+      img: null
+    },
+    manifesto: {
+      lede: "A photograph is only worth taking if someone will still want to look at it later.",
+      items: [
+        { title: "Capture", text: "Working close to the day as it actually unfolds — the parts nobody choreographs and everyone remembers." },
+        { title: "Create", text: "Directing when a scene calls for it: light, posing, timing, and composition built with intention, not luck." },
+        { title: "Preserve", text: "Every frame edited and sequenced so the finished set holds up as a story, not a folder of files." }
+      ]
+    },
+    services: [
+      { title: "Wedding photography & video", text: "Full-day photo and video coverage from preparation to reception, cut into a film as well as a gallery.", tag: "Ceremony · Reception" },
+      { title: "Pre-wedding & engagement", text: "A relaxed session ahead of the big day — engagement portraits, save-the-date imagery, couple sets.", tag: "Couples" },
+      { title: "Portraits", text: "Individual, family and studio portrait sessions, shot on location or in a controlled studio setup.", tag: "Studio · On location" },
+      { title: "Events & special occasions", text: "Anniversaries, milestone birthdays, launches and community gatherings, covered without getting in the way.", tag: "Full coverage" },
+      { title: "Corporate & professional", text: "Headshots, team photography, and documentary-style coverage of company events and site visits.", tag: "Teams · Headshots" },
+      { title: "Graduations", text: "Individual and group graduation portraits, gown and cap sessions, and coverage of the ceremony itself.", tag: "Studio · On location" },
+      { title: "Commercial & promotional video", text: "Scripted and documentary-style video production for brands, nonprofits and community organizations.", tag: "Video production" }
+    ],
+    experience: [
+      { title: "Book & plan", text: "Confirm the date, pay a deposit, and settle the details — location, timing, and what the finished images need to do." },
+      { title: "The session", text: "Shooting on the day itself — directing where it helps, staying invisible where it doesn't." },
+      { title: "Edit & deliver", text: "Every frame reviewed and edited by hand, then delivered through a private online gallery — kept and backed up for years after." }
+    ],
+    about: {
+      paragraphs: [
+        "Gray Capture started in 2020, when Kofi began assisting other photographers around Accra.",
+        "Since then it's grown into a small team — photographers, an editor, and hands on the ground for setup and lighting — built around the same belief that started it: a photograph should feel considered, not just correct. Based in Accra, working across Ghana."
+      ],
+      img: null
     },
     contact: { email: "hello@graycapture.com", phone: "+233 00 000 0000", instagram: "@graycapture" },
     pricing: [
@@ -626,8 +648,13 @@
       const snap = await CONTENT_DOC.get();
       if(snap.exists){
         const parsed = snap.data();
-        parsed.settings = parsed.settings || DEFAULT_CONTENT.settings;
+        parsed.settings = { ...DEFAULT_CONTENT.settings, ...(parsed.settings || {}) };
         parsed.portfolio = parsed.portfolio || DEFAULT_CONTENT.portfolio;
+        parsed.hero = { ...DEFAULT_CONTENT.hero, ...(parsed.hero || {}) };
+        parsed.manifesto = parsed.manifesto || DEFAULT_CONTENT.manifesto;
+        parsed.services = parsed.services || DEFAULT_CONTENT.services;
+        parsed.experience = parsed.experience || DEFAULT_CONTENT.experience;
+        parsed.about = { ...DEFAULT_CONTENT.about, ...(parsed.about || {}) };
         return parsed;
       }
       return null;
@@ -655,9 +682,63 @@
   }
 
   // ---------- render: hero / contact ----------
+  // Shared control for an editable "plate" image (hero, about). Renders an upload/replace/remove
+  // button set into `adminElId`, and swaps the plate itself into image mode when a photo exists.
+  // `rerenderFn` is the caller's own render function (e.g. renderHero) — called after any change
+  // so the next paint always reads the fresh value from state.content instead of a stale closure.
+  function renderPlateImage(plateElId, adminElId, imgValue, onChange, rerenderFn){
+    const plate = document.getElementById(plateElId);
+    const admin = document.getElementById(adminElId);
+    let img = plate.querySelector('img.plate-photo');
+    if(imgValue){
+      plate.classList.add('has-img');
+      if(!img){
+        img = document.createElement('img');
+        img.className = 'plate-photo';
+        img.alt = '';
+        plate.insertBefore(img, plate.firstChild);
+      }
+      img.src = imgValue;
+    } else {
+      plate.classList.remove('has-img');
+      if(img) img.remove();
+    }
+    admin.innerHTML = '';
+    if(!state.isAdmin) return;
+    const inputId = adminElId + '-input';
+    admin.innerHTML = `
+      <input type="file" id="${inputId}" accept="image/*" style="display:none;">
+      <button type="button" class="btn btn-small" id="${adminElId}-upload">${imgValue ? 'Replace photo' : '+ Add photo'}</button>
+      ${imgValue ? `<button type="button" class="btn btn-small btn-danger" id="${adminElId}-remove" style="margin-left:8px;">Remove</button>` : ''}
+    `;
+    document.getElementById(`${adminElId}-upload`).addEventListener('click', () => document.getElementById(inputId).click());
+    document.getElementById(inputId).addEventListener('change', async () => {
+      const file = document.getElementById(inputId).files[0];
+      if(!file) return;
+      showToast('Uploading photo…');
+      try{
+        const { url } = await uploadImage(file, 10);
+        onChange(url);
+        await persistAndRender(rerenderFn);
+      }catch(e){
+        showToast(e.message || 'Upload failed');
+      }
+    });
+    const removeBtn = document.getElementById(`${adminElId}-remove`);
+    if(removeBtn){
+      removeBtn.addEventListener('click', async () => {
+        if(!confirm('Remove this photo?')) return;
+        onChange(null);
+        await persistAndRender(rerenderFn);
+      });
+    }
+  }
+
   function renderHero(){
     document.getElementById('hero-headline').textContent = state.content.hero.headline;
     document.getElementById('hero-sub').textContent = state.content.hero.sub;
+    renderPlateImage('hero-plate', 'hero-image-admin', state.content.hero.img, (url) => { state.content.hero.img = url; }, renderHero);
+    renderPlateImage('hero-plate', 'hero-image-admin', state.content.hero.img, (url) => { state.content.hero.img = url; });
     const box = document.getElementById('hero-admin');
     box.innerHTML = '';
     if(!state.isAdmin) return;
@@ -698,6 +779,172 @@
       state.content.contact.instagram = document.getElementById('edit-instagram').value || state.content.contact.instagram;
       await persistAndRender(renderContact);
     });
+  }
+
+  // ---------- render: manifesto ----------
+  function renderManifesto(){
+    const box = document.getElementById('manifesto-content');
+    const m = state.content.manifesto;
+    const itemsHtml = m.items.map((item, i) => `
+      <div class="manifesto-item">
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.text)}</p>
+        ${state.isAdmin ? `
+          <div class="price-edit">
+            <input class="mf-title" data-i="${i}" value="${escapeAttr(item.title)}" placeholder="Title">
+            <textarea class="mf-text" data-i="${i}" rows="2" placeholder="Text">${escapeHtml(item.text)}</textarea>
+          </div>` : ''}
+      </div>`).join('');
+    box.innerHTML = `
+      <p class="manifesto-lede">${escapeHtml(m.lede)}</p>
+      ${state.isAdmin ? `<div class="editable-field" style="max-width:480px; margin-bottom:24px;"><label>Lede line</label><textarea id="mf-lede" rows="2">${escapeHtml(m.lede)}</textarea></div>` : ''}
+      <div class="manifesto-grid">${itemsHtml}</div>
+      ${state.isAdmin ? `<div class="admin-row" style="margin-top:20px;"><button class="btn btn-small btn-solid" id="save-manifesto">Save manifesto</button></div>` : ''}
+    `;
+    if(state.isAdmin){
+      document.getElementById('save-manifesto').addEventListener('click', async () => {
+        m.lede = document.getElementById('mf-lede').value || m.lede;
+        box.querySelectorAll('.mf-title').forEach(el => { m.items[+el.dataset.i].title = el.value || m.items[+el.dataset.i].title; });
+        box.querySelectorAll('.mf-text').forEach(el => { m.items[+el.dataset.i].text = el.value || m.items[+el.dataset.i].text; });
+        await persistAndRender(renderManifesto);
+      });
+    }
+  }
+
+  // ---------- render: services ----------
+  function renderServicesAdmin(){
+    const box = document.getElementById('services-admin');
+    box.innerHTML = '';
+    if(!state.isAdmin) return;
+    box.innerHTML = `<div class="admin-row" style="margin-bottom:24px;"><button class="btn btn-small" id="add-service">+ Add service</button></div>`;
+    document.getElementById('add-service').addEventListener('click', async () => {
+      state.content.services.push({ title: "New service", text: "Describe what this covers.", tag: "" });
+      await persistAndRender(renderServices);
+    });
+  }
+
+  function renderServices(){
+    renderServicesAdmin();
+    const list = document.getElementById('services-list');
+    list.innerHTML = state.content.services.map((s, i) => `
+      <div class="service-row">
+        <h3>${escapeHtml(s.title)}</h3>
+        <p>${escapeHtml(s.text)}</p>
+        <span class="service-tag">${escapeHtml(s.tag)}</span>
+        ${state.isAdmin ? `
+          <div class="price-edit" style="grid-column:1/-1;">
+            <input class="svc-title" data-i="${i}" value="${escapeAttr(s.title)}" placeholder="Title">
+            <textarea class="svc-text" data-i="${i}" rows="2" placeholder="Description">${escapeHtml(s.text)}</textarea>
+            <input class="svc-tag" data-i="${i}" value="${escapeAttr(s.tag)}" placeholder="Small tag (optional)">
+            <div class="admin-row">
+              <button class="btn btn-small btn-solid save-service" data-i="${i}">Save</button>
+              <button class="btn btn-small btn-danger remove-service" data-i="${i}">Remove</button>
+            </div>
+          </div>` : ''}
+      </div>`).join('');
+    if(state.isAdmin){
+      list.querySelectorAll('.save-service').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const i = +btn.dataset.i;
+          const title = list.querySelector(`.svc-title[data-i="${i}"]`).value.trim();
+          const text = list.querySelector(`.svc-text[data-i="${i}"]`).value.trim();
+          const tag = list.querySelector(`.svc-tag[data-i="${i}"]`).value.trim();
+          if(title) state.content.services[i].title = title;
+          if(text) state.content.services[i].text = text;
+          state.content.services[i].tag = tag;
+          await persistAndRender(renderServices);
+        });
+      });
+      list.querySelectorAll('.remove-service').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('Remove this service?')) return;
+          state.content.services.splice(+btn.dataset.i, 1);
+          await persistAndRender(renderServices);
+        });
+      });
+    }
+  }
+
+  // ---------- render: experience timeline ----------
+  function renderExperienceAdmin(){
+    const box = document.getElementById('experience-admin');
+    box.innerHTML = '';
+    if(!state.isAdmin) return;
+    box.innerHTML = `<div class="admin-row" style="margin-bottom:24px;"><button class="btn btn-small" id="add-step">+ Add step</button></div>`;
+    document.getElementById('add-step').addEventListener('click', async () => {
+      state.content.experience.push({ title: "New step", text: "Describe this step." });
+      await persistAndRender(renderExperienceSteps);
+    });
+  }
+
+  function renderExperienceSteps(){
+    renderExperienceAdmin();
+    const box = document.getElementById('experience-timeline');
+    box.innerHTML = state.content.experience.map((step, i) => `
+      <div class="step">
+        <div class="step-num">${i + 1}</div>
+        <div>
+          <h3>${escapeHtml(step.title)}</h3>
+          <p>${escapeHtml(step.text)}</p>
+          ${state.isAdmin ? `
+            <div class="price-edit">
+              <input class="exp-title" data-i="${i}" value="${escapeAttr(step.title)}" placeholder="Step title">
+              <textarea class="exp-text" data-i="${i}" rows="2" placeholder="Step description">${escapeHtml(step.text)}</textarea>
+              <div class="admin-row">
+                <button class="btn btn-small btn-solid save-step" data-i="${i}">Save</button>
+                <button class="btn btn-small btn-danger remove-step" data-i="${i}">Remove</button>
+              </div>
+            </div>` : ''}
+        </div>
+      </div>`).join('');
+    if(state.isAdmin){
+      box.querySelectorAll('.save-step').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const i = +btn.dataset.i;
+          const title = box.querySelector(`.exp-title[data-i="${i}"]`).value.trim();
+          const text = box.querySelector(`.exp-text[data-i="${i}"]`).value.trim();
+          if(title) state.content.experience[i].title = title;
+          if(text) state.content.experience[i].text = text;
+          await persistAndRender(renderExperienceSteps);
+        });
+      });
+      box.querySelectorAll('.remove-step').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('Remove this step?')) return;
+          state.content.experience.splice(+btn.dataset.i, 1);
+          await persistAndRender(renderExperienceSteps);
+        });
+      });
+    }
+  }
+
+  // ---------- render: about ----------
+  function renderAbout(){
+    renderPlateImage('about-plate', 'about-image-admin', state.content.about.img, (url) => { state.content.about.img = url; }, renderAbout);
+    const box = document.getElementById('about-copy');
+    const facts = `<div class="about-facts">
+          <div class="fact"><b>2020</b><span>Founded in Accra</span></div>
+          <div class="fact"><b>Team</b><span>Photographers &amp; editors</span></div>
+          <div class="fact"><b>6+</b><span>Categories of coverage</span></div>
+        </div>`;
+    const paragraphsHtml = state.content.about.paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    const adminHtml = state.isAdmin ? `
+      <div class="admin-panel">
+        <div class="admin-panel-title">EDIT ABOUT TEXT</div>
+        <div class="editable-field"><label>Paragraph 1</label><textarea id="about-p1" rows="2">${escapeHtml(state.content.about.paragraphs[0] || '')}</textarea></div>
+        <div class="editable-field"><label>Paragraph 2</label><textarea id="about-p2" rows="3">${escapeHtml(state.content.about.paragraphs[1] || '')}</textarea></div>
+        <div class="admin-row"><button class="btn btn-small btn-solid" id="save-about">Save about text</button></div>
+      </div>` : '';
+    box.innerHTML = paragraphsHtml + adminHtml + facts;
+    if(state.isAdmin){
+      document.getElementById('save-about').addEventListener('click', async () => {
+        state.content.about.paragraphs = [
+          document.getElementById('about-p1').value || state.content.about.paragraphs[0],
+          document.getElementById('about-p2').value || state.content.about.paragraphs[1]
+        ];
+        await persistAndRender(renderAbout);
+      });
+    }
   }
 
   // ---------- render: pricing ----------
@@ -771,6 +1018,38 @@
   }
 
   // ---------- render: portfolio ----------
+  // Shared Cloudinary upload — returns {url, width, height} or throws.
+  // Cloudinary's response includes the real pixel dimensions, which is how
+  // we auto-pick the best-fitting tile shape for portfolio photos below.
+  async function uploadImage(file, maxMB){
+    if(!CLOUDINARY_READY()){
+      throw new Error("Photo uploads aren't connected yet — add your Cloudinary cloud name and upload preset in the page code.");
+    }
+    if(file.size > maxMB * 1024 * 1024){
+      throw new Error(`Please use an image under ~${maxMB}MB (compress or resize first).`);
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
+      method: 'POST', body: formData
+    });
+    const data = await res.json();
+    if(!data.secure_url) throw new Error(data.error && data.error.message ? data.error.message : 'Upload failed');
+    return { url: data.secure_url, width: data.width, height: data.height };
+  }
+
+  // Pick the grid tile shape that best fits the photo's real aspect ratio,
+  // so admin-uploaded photos land somewhere that actually suits their shape
+  // instead of always defaulting to one size.
+  function bestFitSize(width, height){
+    const ratio = width / height;
+    if(ratio >= 1.35) return 's2';        // wide landscape → 2x2 (roughly square-wide) block
+    if(ratio <= 0.62) return 's4';        // very tall portrait → 1x3 tall strip
+    if(ratio <= 0.85) return 's3';        // moderate portrait → 1x2 tall
+    return 's1';                          // near-square / slightly tall → big 2x3 feature tile
+  }
+
   function renderGallery(){
     const gallery = document.getElementById('gallery');
     const items = state.content.portfolio;
@@ -802,6 +1081,7 @@
           <option value="events">Events</option>
           <option value="couples">Couples</option>
           <option value="corporate">Corporate</option>
+          <option value="graduations">Graduations</option>
         </select>
       </div>`;
     }
@@ -822,29 +1102,14 @@
       fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
         if(!file) return;
-        if(!CLOUDINARY_READY()){
-          showToast("Photo uploads aren't connected yet — add your Cloudinary cloud name and upload preset in the page code.");
-          fileInput.value = '';
-          return;
-        }
-        if(file.size > 10 * 1024 * 1024){
-          showToast("Please use an image under ~10MB (compress or resize first).");
-          return;
-        }
         const category = document.getElementById('add-photo-category').value;
         showToast("Uploading photo…");
         try{
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
-          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
-            method: 'POST', body: formData
-          });
-          const data = await res.json();
-          if(!data.secure_url) throw new Error(data.error && data.error.message ? data.error.message : 'Upload failed');
+          const { url, width, height } = await uploadImage(file, 10);
+          const size = (width && height) ? bestFitSize(width, height) : 's2';
           state.content.portfolio.push({
             id: uid('g'), category, caption: category.charAt(0).toUpperCase() + category.slice(1),
-            size: 's2', img: data.secure_url
+            size, img: url
           });
           await persistAndRender(renderGallery);
         }catch(e){
@@ -869,6 +1134,7 @@
     "Portraits",
     "Events & special occasions",
     "Corporate & professional",
+    "Graduations",
     "Commercial & promotional video",
     "Not sure yet"
   ];
@@ -898,24 +1164,30 @@
       <div class="admin-panel">
         <div class="admin-panel-title">BOOKING &amp; PAYMENT SETTINGS</div>
         <div class="editable-field"><label>Deposit amount (${escapeHtml(cur)})</label><input id="edit-deposit" type="number" value="${dep}"></div>
+        <div class="editable-field"><label>Google Sheets webhook URL (optional)</label><input id="edit-sheets-url" type="text" value="${escapeAttr(state.content.settings.sheetsWebhookUrl || '')}" placeholder="https://script.google.com/macros/s/.../exec"></div>
         <p style="font-size:0.78rem; color:var(--ink-mute); margin-top:8px;">
-          Email sending: <b>${emailStatus}</b> · Payments: <b>${payStatus}</b> · Photo uploads: <b>${cloudStatus}</b><br>
+          Email sending: <b>${emailStatus}</b> · Payments: <b>${payStatus}</b> · Photo uploads: <b>${cloudStatus}</b> · Sheets logging: <b>${state.content.settings.sheetsWebhookUrl ? 'connected' : 'not connected yet'}</b><br>
           Booking notifications go to <b>${escapeHtml(OWNER_EMAIL)}</b>. ${setupNote}
         </p>
-        <div class="admin-row"><button class="btn btn-small btn-solid" id="save-deposit">Save deposit amount</button></div>
+        <div class="admin-row"><button class="btn btn-small btn-solid" id="save-deposit">Save booking settings</button></div>
       </div>`;
     document.getElementById('save-deposit').addEventListener('click', async () => {
       const val = parseFloat(document.getElementById('edit-deposit').value);
       if(!isNaN(val) && val >= 0){ state.content.settings.depositAmount = val; }
+      state.content.settings.sheetsWebhookUrl = document.getElementById('edit-sheets-url').value.trim();
       await persistAndRender(renderBookingForm);
     });
   }
 
   function renderAll(){
     renderHero();
+    renderManifesto();
+    renderServices();
     renderContact();
     renderPricing();
     renderGallery();
+    renderExperienceSteps();
+    renderAbout();
     renderBookingForm();
   }
 
@@ -1010,6 +1282,22 @@
         emailsSent = true;
       }catch(err){
         console.error(err);
+      }
+    }
+
+    const sheetsUrl = state.content.settings.sheetsWebhookUrl;
+    if(sheetsUrl){
+      try{
+        // Apps Script web apps don't return CORS headers, so we fire-and-forget with
+        // mode:'no-cors' — the row still gets appended, we just can't read a response back.
+        await fetch(sheetsUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data)
+        });
+      }catch(err){
+        console.error('Google Sheets logging failed', err);
       }
     }
 
