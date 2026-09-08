@@ -880,13 +880,20 @@
     const emailStatus = EMAILJS_READY() ? 'connected' : 'not connected yet';
     const payStatus = PAYSTACK_READY() ? 'connected' : 'not connected yet';
     const cloudStatus = CLOUDINARY_READY() ? 'connected' : 'not connected yet';
+    const notReady = [];
+    if(!EMAILJS_READY()) notReady.push('EmailJS');
+    if(!PAYSTACK_READY()) notReady.push('Paystack');
+    if(!CLOUDINARY_READY()) notReady.push('Cloudinary');
+    const setupNote = notReady.length
+      ? `Add your ${notReady.join(' and ')} key${notReady.length > 1 ? 's' : ''} near the top of the page code to activate ${notReady.length > 1 ? 'them' : 'it'}.`
+      : 'All connected — booking emails, deposits and photo uploads are live.';
     box.innerHTML = `
       <div class="admin-panel">
         <div class="admin-panel-title">BOOKING &amp; PAYMENT SETTINGS</div>
         <div class="editable-field"><label>Deposit amount (${escapeHtml(cur)})</label><input id="edit-deposit" type="number" value="${dep}"></div>
         <p style="font-size:0.78rem; color:var(--ink-mute); margin-top:8px;">
           Email sending: <b>${emailStatus}</b> · Payments: <b>${payStatus}</b> · Photo uploads: <b>${cloudStatus}</b><br>
-          Booking notifications go to <b>${escapeHtml(OWNER_EMAIL)}</b>. Add your EmailJS and Paystack keys near the top of the page code to activate both.
+          Booking notifications go to <b>${escapeHtml(OWNER_EMAIL)}</b>. ${setupNote}
         </p>
         <div class="admin-row"><button class="btn btn-small btn-solid" id="save-deposit">Save deposit amount</button></div>
       </div>`;
