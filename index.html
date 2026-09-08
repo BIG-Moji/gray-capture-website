@@ -577,9 +577,10 @@
   const OWNER_EMAIL = "graycapture1@gmail.com";
 
   // ---- Paystack setup (paystack.com — free to start, supports GHS Mobile Money) ----
-  // Sign up, verify your business, then grab your Public Key from Settings > API Keys & Webhooks.
+  // Currently set to the TEST public key — safe to test with, no real money moves.
+  // Once your business is verified, swap this for your Live Public Key (starts with pk_live_...).
   const PAYSTACK_CONFIG = {
-    publicKey: "YOUR_PAYSTACK_PUBLIC_KEY"
+    publicKey: "pk_test_2c52e36b2fac9087287e08a7d8ca56883b36d5a5"
   };
 
   const EMAILJS_READY = () => window.emailjs && EMAILJS_CONFIG.publicKey !== "YOUR_EMAILJS_PUBLIC_KEY";
