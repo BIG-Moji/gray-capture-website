@@ -219,11 +219,18 @@
   .s3{ grid-column:span 1; grid-row:span 2; }
   .s4{ grid-column:span 1; grid-row:span 3; }
   @media(max-width:760px){ .s1,.s2,.s3,.s4{ grid-column:span 1; grid-row:span 2; } }
+  .tile-admin{
+    position:absolute; top:10px; left:10px; right:10px; z-index:3;
+    display:flex; align-items:center; gap:8px;
+  }
+  .tile-admin .btn-small{
+    background:rgba(11,11,11,.75); border-color:rgba(245,243,238,.4); color:#f5f3ee; backdrop-filter:blur(4px);
+  }
+  .tile-admin .btn-small:hover{ border-color:#f5f3ee; }
   .tile-remove{
-    position:absolute; top:10px; left:10px; z-index:3;
     width:26px; height:26px; border-radius:50%; border:1px solid rgba(245,243,238,.4);
     background:rgba(21,18,14,.75); color:var(--ink); font-size:0.85rem; line-height:1;
-    display:flex; align-items:center; justify-content:center;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
   .tile-remove:hover{ border-color:var(--danger); color:var(--danger); }
   .add-tile{
@@ -400,7 +407,8 @@
 
   <section id="pricing">
     <div class="wrap">
-      <div class="section-head"><p class="eyebrow">Packages</p><h2>Pricing, kept simple.</h2><p>Packages below cover the common cases — most sessions still start with a short call to confirm fit.</p></div>
+      <div class="section-head"><p class="eyebrow">Packages</p><h2>Pricing by service.</h2><p>Tap a service to see its packages — most sessions still start with a short call to confirm fit.</p></div>
+      <div class="filter-row" id="pricing-tabs"></div>
       <div id="pricing-admin"></div>
       <div class="pricing-grid" id="pricing-grid"></div>
     </div>
@@ -478,7 +486,13 @@
 
         <div id="deposit-box" style="margin-top:28px; padding-top:24px; border-top:1px solid var(--line);">
           <p style="font-size:0.9rem; color:var(--ink-dim); margin-bottom:14px;">Prefer to secure the date now? Pay a deposit by card, Mobile Money (MTN, Vodafone Cash, AirtelTigo), or bank transfer.</p>
-          <button type="button" class="btn" id="pay-deposit-btn" style="width:100%; justify-content:center;">Pay deposit — <span id="deposit-amount-label"></span></button>
+          <div class="field-row" style="grid-template-columns:auto 1fr; gap:12px; align-items:end; margin-bottom:14px;">
+            <div class="field" style="margin-bottom:0;">
+              <label for="deposit-input">Amount (<span id="deposit-currency-label"></span>)</label>
+              <input type="number" id="deposit-input" min="1" step="1" style="width:140px;">
+            </div>
+          </div>
+          <button type="button" class="btn" id="pay-deposit-btn" style="width:100%; justify-content:center;">Pay deposit</button>
         </div>
 
         <div id="booking-admin"></div>
@@ -615,11 +629,43 @@
       img: null
     },
     contact: { email: "hello@graycapture.com", phone: "+233 00 000 0000", instagram: "@graycapture" },
-    pricing: [
-      { id: "p1", name: "Silver", price: "GH₵ 3,500", featured: false, features: ["4 hours coverage","1 photographer","150+ edited photos","Online gallery"] },
-      { id: "p2", name: "Gold", price: "GH₵ 6,000", featured: true, features: ["Full day coverage","2 photographers","400+ edited photos","Online gallery","20-page printed album"] },
-      { id: "p3", name: "Platinum", price: "GH₵ 9,500", featured: false, features: ["Full day + pre-wedding session","2 photographers + assistant","600+ edited photos","Online gallery","30-page premium album","USB drive with raw selects"] }
-    ],
+    pricingByCategory: {
+      weddings: [
+        { id: "w1", name: "Silver", price: "GH₵ 3,500", featured: false, features: ["4 hours coverage","1 photographer","150+ edited photos","Online gallery"] },
+        { id: "w2", name: "Gold", price: "GH₵ 6,000", featured: true, features: ["Full day coverage","2 photographers","400+ edited photos","Online gallery","20-page printed album"] },
+        { id: "w3", name: "Platinum", price: "GH₵ 9,500", featured: false, features: ["Full day + pre-wedding session","2 photographers + assistant","600+ edited photos","Online gallery","30-page premium album","USB drive with raw selects"] }
+      ],
+      couples: [
+        { id: "c1", name: "Essential", price: "GH₵ 1,200", featured: false, features: ["1 hour session","1 location","30+ edited photos","Online gallery"] },
+        { id: "c2", name: "Standard", price: "GH₵ 1,800", featured: true, features: ["2 hour session","Up to 2 locations","60+ edited photos","Online gallery","Outfit change"] },
+        { id: "c3", name: "Premium", price: "GH₵ 2,800", featured: false, features: ["Half-day session","Up to 3 locations","100+ edited photos","Online gallery","2 outfit changes","10 printed photos"] }
+      ],
+      portraits: [
+        { id: "pt1", name: "Solo", price: "GH₵ 500", featured: false, features: ["30 minute session","Studio or on location","15+ edited photos","Online gallery"] },
+        { id: "pt2", name: "Family", price: "GH₵ 900", featured: true, features: ["1 hour session","Studio or on location","30+ edited photos","Online gallery","Up to 5 people"] },
+        { id: "pt3", name: "Studio Deluxe", price: "GH₵ 1,500", featured: false, features: ["2 hour session","Full studio lighting setup","50+ edited photos","Online gallery","Multiple outfit changes"] }
+      ],
+      events: [
+        { id: "e1", name: "Basic", price: "GH₵ 1,200", featured: false, features: ["Up to 3 hours coverage","1 photographer","80+ edited photos","Online gallery"] },
+        { id: "e2", name: "Standard", price: "GH₵ 2,200", featured: true, features: ["Up to 6 hours coverage","1 photographer","200+ edited photos","Online gallery"] },
+        { id: "e3", name: "Full Coverage", price: "GH₵ 3,800", featured: false, features: ["Full-day coverage","2 photographers","400+ edited photos","Online gallery","Same-week highlight reel"] }
+      ],
+      corporate: [
+        { id: "cp1", name: "Headshots", price: "GH₵ 800", featured: false, features: ["Up to 10 people","Studio or office setup","2 edited photos per person","Online gallery"] },
+        { id: "cp2", name: "Team Package", price: "GH₵ 2,500", featured: true, features: ["Up to 25 people","Studio or office setup","2 edited photos per person","Online gallery","Group photo included"] },
+        { id: "cp3", name: "Full Event Coverage", price: "GH₵ 4,500", featured: false, features: ["Full-day event coverage","2 photographers","300+ edited photos","Online gallery","Fast 48-hour turnaround"] }
+      ],
+      graduations: [
+        { id: "g1", name: "Solo", price: "GH₵ 450", featured: false, features: ["30 minute session","Campus or studio location","20+ edited photos","Online gallery"] },
+        { id: "g2", name: "Group", price: "GH₵ 750", featured: true, features: ["1 hour session","Up to 6 graduates","40+ edited photos","Online gallery"] },
+        { id: "g3", name: "Full Day", price: "GH₵ 1,300", featured: false, features: ["Ceremony + portrait session","Full-day coverage","100+ edited photos","Online gallery"] }
+      ],
+      video: [
+        { id: "v1", name: "Promo Basic", price: "GH₵ 3,000", featured: false, features: ["Up to 2 minutes final video","Half-day filming","Basic color grading","1 revision round"] },
+        { id: "v2", name: "Standard Production", price: "GH₵ 6,000", featured: true, features: ["Up to 4 minutes final video","Full-day filming","Professional color grading","2 revision rounds","Licensed background music"] },
+        { id: "v3", name: "Premium Production", price: "GH₵ 10,000", featured: false, features: ["Multi-day filming","Scripted + documentary style","Professional color grading","Unlimited revisions","Licensed music & motion graphics"] }
+      ]
+    },
     portfolio: [
       { id: "g1", category: "weddings", caption: "Weddings", size: "s1", img: null },
       { id: "g2", category: "portraits", caption: "Portraits", size: "s3", img: null },
@@ -632,7 +678,7 @@
     ]
   };
 
-  let state = { content: null, isAdmin: false, activeFilter: "all" };
+  let state = { content: null, isAdmin: false, activeFilter: "all", activePricingTab: "weddings" };
 
   function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
 
@@ -655,6 +701,7 @@
         parsed.services = parsed.services || DEFAULT_CONTENT.services;
         parsed.experience = parsed.experience || DEFAULT_CONTENT.experience;
         parsed.about = { ...DEFAULT_CONTENT.about, ...(parsed.about || {}) };
+        parsed.pricingByCategory = parsed.pricingByCategory || DEFAULT_CONTENT.pricingByCategory;
         return parsed;
       }
       return null;
@@ -948,23 +995,50 @@
   }
 
   // ---------- render: pricing ----------
+  const PRICING_TABS = [
+    { key: "weddings", label: "Weddings" },
+    { key: "couples", label: "Pre-wedding" },
+    { key: "portraits", label: "Portraits" },
+    { key: "events", label: "Events" },
+    { key: "corporate", label: "Corporate" },
+    { key: "graduations", label: "Graduations" },
+    { key: "video", label: "Video" }
+  ];
+
+  function renderPricingTabs(){
+    const box = document.getElementById('pricing-tabs');
+    box.innerHTML = PRICING_TABS.map(tab => `
+      <button class="filter-btn ${state.activePricingTab === tab.key ? 'active' : ''}" data-tab="${tab.key}">${escapeHtml(tab.label)}</button>
+    `).join('');
+    box.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.activePricingTab = btn.dataset.tab;
+        renderPricing();
+      });
+    });
+  }
+
   function renderPricingAdminControls(){
     const box = document.getElementById('pricing-admin');
     box.innerHTML = '';
     if(!state.isAdmin) return;
     box.innerHTML = `<div class="admin-row" style="margin-bottom:24px;">
-      <button class="btn btn-small" id="add-tier">+ Add package</button>
+      <button class="btn btn-small" id="add-tier">+ Add package to this tab</button>
     </div>`;
     document.getElementById('add-tier').addEventListener('click', async () => {
-      state.content.pricing.push({ id: uid('p'), name: "New package", price: "GH₵ 0", featured:false, features:["Detail one","Detail two"] });
+      const tab = state.activePricingTab;
+      state.content.pricingByCategory[tab].push({ id: uid('p'), name: "New package", price: "GH₵ 0", featured:false, features:["Detail one","Detail two"] });
       await persistAndRender(renderPricing);
     });
   }
 
   function renderPricing(){
+    renderPricingTabs();
     renderPricingAdminControls();
     const grid = document.getElementById('pricing-grid');
-    grid.innerHTML = state.content.pricing.map(tier => {
+    const tab = state.activePricingTab;
+    const tiers = state.content.pricingByCategory[tab] || [];
+    grid.innerHTML = tiers.map(tier => {
       const featuresHtml = tier.features.map(f => `<li>${escapeHtml(f)}</li>`).join('');
       let adminEdit = '';
       if(state.isAdmin){
@@ -972,7 +1046,7 @@
           <div class="price-edit">
             <input class="edit-tier-name" data-id="${tier.id}" value="${escapeAttr(tier.name)}" placeholder="Package name">
             <input class="edit-tier-price" data-id="${tier.id}" value="${escapeAttr(tier.price)}" placeholder="Price">
-            <textarea class="edit-tier-features" data-id="${tier.id}" rows="4" placeholder="One feature per line">${escapeHtml(tier.features.join('\\n'))}</textarea>
+            <textarea class="edit-tier-features" data-id="${tier.id}" rows="4" placeholder="One feature per line">${escapeHtml(tier.features.join('\n'))}</textarea>
             <label style="font-size:0.78rem; color:var(--ink-mute); display:flex; gap:6px; align-items:center;">
               <input type="checkbox" class="edit-tier-featured" data-id="${tier.id}" ${tier.featured ? 'checked' : ''}> Highlight this package
             </label>
@@ -995,22 +1069,23 @@
       grid.querySelectorAll('.save-tier').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.id;
-          const tier = state.content.pricing.find(t => t.id === id);
+          const tiersArr = state.content.pricingByCategory[tab];
+          const tier = tiersArr.find(t => t.id === id);
           const name = grid.querySelector(`.edit-tier-name[data-id="${id}"]`).value.trim();
           const price = grid.querySelector(`.edit-tier-price[data-id="${id}"]`).value.trim();
-          const features = grid.querySelector(`.edit-tier-features[data-id="${id}"]`).value.split('\\n').map(s => s.trim()).filter(Boolean);
+          const features = grid.querySelector(`.edit-tier-features[data-id="${id}"]`).value.split('\n').map(s => s.trim()).filter(Boolean);
           const featured = grid.querySelector(`.edit-tier-featured[data-id="${id}"]`).checked;
           if(name) tier.name = name;
           if(price) tier.price = price;
           if(features.length) tier.features = features;
-          if(featured){ state.content.pricing.forEach(t => t.featured = (t.id === id)); } else { tier.featured = false; }
+          if(featured){ tiersArr.forEach(t => t.featured = (t.id === id)); } else { tier.featured = false; }
           await persistAndRender(renderPricing);
         });
       });
       grid.querySelectorAll('.remove-tier').forEach(btn => {
         btn.addEventListener('click', async () => {
           if(!confirm('Remove this package?')) return;
-          state.content.pricing = state.content.pricing.filter(t => t.id !== btn.dataset.id);
+          state.content.pricingByCategory[tab] = state.content.pricingByCategory[tab].filter(t => t.id !== btn.dataset.id);
           await persistAndRender(renderPricing);
         });
       });
@@ -1063,9 +1138,18 @@
     let html = items.map(item => {
       const hidden = (state.activeFilter !== 'all' && item.category !== state.activeFilter) ? 'hide' : '';
       const imgHtml = item.img ? `<img src="${item.img}" alt="${escapeAttr(item.caption)}">` : `<div class="grain"></div>`;
-      const removeBtn = state.isAdmin ? `<button class="tile-remove" data-id="${item.id}" aria-label="Remove photo">×</button>` : '';
+      let adminControls = '';
+      if(state.isAdmin){
+        const inputId = `tile-input-${item.id}`;
+        adminControls = `
+          <div class="tile-admin">
+            <input type="file" id="${inputId}" accept="image/*" style="display:none;">
+            <button type="button" class="btn btn-small tile-upload" data-id="${item.id}" data-input="${inputId}">${item.img ? 'Replace' : '+ Add photo'}</button>
+            ${item.img ? `<button type="button" class="tile-remove" data-id="${item.id}" aria-label="Remove photo">×</button>` : ''}
+          </div>`;
+      }
       return `<div class="tile plate ${item.img ? 'has-img' : ''} ${item.size} ${hidden}" data-cat="${item.category}">
-        ${removeBtn}
+        ${adminControls}
         ${imgHtml}
         <div class="plate-label"><span>${escapeHtml(item.caption)}</span></div>
       </div>`;
@@ -1094,6 +1178,27 @@
           if(!confirm('Remove this photo from the site? (The file will stay in your Cloudinary media library — delete it there too if you want it fully gone.)')) return;
           state.content.portfolio = state.content.portfolio.filter(p => p.id !== btn.dataset.id);
           await persistAndRender(renderGallery);
+        });
+      });
+      gallery.querySelectorAll('.tile-upload').forEach(btn => {
+        btn.addEventListener('click', () => document.getElementById(btn.dataset.input).click());
+      });
+      gallery.querySelectorAll('input[id^="tile-input-"]').forEach(input => {
+        input.addEventListener('change', async () => {
+          const file = input.files[0];
+          if(!file) return;
+          const itemId = input.id.replace('tile-input-', '');
+          const item = state.content.portfolio.find(p => p.id === itemId);
+          if(!item) return;
+          showToast('Uploading photo…');
+          try{
+            const { url, width, height } = await uploadImage(file, 10);
+            item.img = url;
+            if(width && height) item.size = bestFitSize(width, height);
+            await persistAndRender(renderGallery);
+          }catch(e){
+            showToast(e.message || 'Upload failed');
+          }
         });
       });
       const addTile = document.getElementById('add-photo-tile');
@@ -1145,7 +1250,12 @@
 
     const dep = state.content.settings.depositAmount;
     const cur = state.content.settings.currency;
-    document.getElementById('deposit-amount-label').textContent = `${cur} ${dep}`;
+    document.getElementById('deposit-currency-label').textContent = cur;
+    const depositInput = document.getElementById('deposit-input');
+    if(depositInput && !depositInput.dataset.userEdited){
+      depositInput.value = dep;
+    }
+    depositInput.addEventListener('input', () => { depositInput.dataset.userEdited = 'true'; });
 
     const box = document.getElementById('booking-admin');
     box.innerHTML = '';
@@ -1163,7 +1273,7 @@
     box.innerHTML = `
       <div class="admin-panel">
         <div class="admin-panel-title">BOOKING &amp; PAYMENT SETTINGS</div>
-        <div class="editable-field"><label>Deposit amount (${escapeHtml(cur)})</label><input id="edit-deposit" type="number" value="${dep}"></div>
+        <div class="editable-field"><label>Suggested deposit amount (${escapeHtml(cur)}) — visitors can change this before paying</label><input id="edit-deposit" type="number" value="${dep}"></div>
         <div class="editable-field"><label>Google Sheets webhook URL (optional)</label><input id="edit-sheets-url" type="text" value="${escapeAttr(state.content.settings.sheetsWebhookUrl || '')}" placeholder="https://script.google.com/macros/s/.../exec"></div>
         <p style="font-size:0.78rem; color:var(--ink-mute); margin-top:8px;">
           Email sending: <b>${emailStatus}</b> · Payments: <b>${payStatus}</b> · Photo uploads: <b>${cloudStatus}</b> · Sheets logging: <b>${state.content.settings.sheetsWebhookUrl ? 'connected' : 'not connected yet'}</b><br>
@@ -1320,7 +1430,12 @@
       showToast('Payments aren\'t connected yet — add a Paystack public key in admin mode / the page code.');
       return;
     }
-    const amount = Math.round(parseFloat(state.content.settings.depositAmount) * 100);
+    const enteredAmount = parseFloat(document.getElementById('deposit-input').value);
+    if(!enteredAmount || enteredAmount <= 0){
+      showToast('Enter an amount to pay first.');
+      return;
+    }
+    const amount = Math.round(enteredAmount * 100);
     const handler = PaystackPop.setup({
       key: PAYSTACK_CONFIG.publicKey,
       email: email,
